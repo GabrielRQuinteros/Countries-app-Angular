@@ -1,1 +1,22 @@
-<p>by-country-page works!</p>
+<h2>Por País</h2>
+<hr>
+
+<div class="row">
+  <div class="col">
+    <!-- SearchBoxComponent -->
+    <!-- onValue = Emiter de shared-search-box, searchCapital= Metodo que recibe el valor retornado del emiter
+        $event = valor retornado del emiter -->
+     <shared-search-box placeholder="Busqueda por País"
+                        className="form-control"
+                        (onValue)="searchByCountry($event)"
+                        ></shared-search-box>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col">
+    <hr>
+    <!-- TableComponent -->
+    <countries-country-table [countries]="countries" ></countries-country-table>
+  </div>
+</div>

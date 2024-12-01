@@ -15,8 +15,9 @@
         <th>#</th>
         <th>Bandera</th>
         <th>Nombre</th>
-        <th>Poblacion</th>
+        <th>Población</th>
         <th>Capital</th>
+        <th>Region</th>
         <th>Enlace</th>
       </thead>
       <tbody>
@@ -26,7 +27,8 @@
           <td>{{ country.name.common }}</td>
           <td>{{ country.capital }}</td>
           <td>{{ country.population | number }}</td>
-          <td><a href="#" >Ver Mas</a></td>
+          <td>{{ country.region }}</td>
+          <td><a [routerLink]="['/countries/by', country.cca3]" >Ver Mas</a></td>
         </tr>
       </tbody>
    </table>
