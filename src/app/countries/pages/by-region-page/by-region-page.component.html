@@ -6,10 +6,13 @@
     <!-- SearchBoxComponent -->
     <!-- onValue = Emiter de shared-search-box, searchCapital= Metodo que recibe el valor retornado del emiter
         $event = valor retornado del emiter -->
-     <shared-search-box placeholder="Busqueda por Region"
-                        className="form-control"
-                        (onValue)="searchByRegion($event)"
-                        ></shared-search-box>
+     <button *ngFor="let region of regions"
+              class="btn mx-2"
+              (click)="searchByRegion(region)"
+              [ngClass]="{ 'btn-outline-primary': region == selectedRegion }"
+              >
+      {{ region }}
+     </button>
   </div>
 </div>
 

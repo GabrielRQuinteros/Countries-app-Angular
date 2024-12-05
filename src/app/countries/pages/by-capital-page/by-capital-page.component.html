@@ -6,9 +6,10 @@
     <!-- SearchBoxComponent -->
     <!-- onValue = Emiter de shared-search-box, searchCapital= Metodo que recibe el valor retornado del emiter
         $event = valor retornado del emiter -->
+        <!-- (onValue)="searchByCapital($event)" -->
      <shared-search-box placeholder="Busqueda por Capital"
                         className="form-control"
-                        (onValue)="searchByCapital($event)"
+                        (onDebounce)="searchByCapital($event)"
                         ></shared-search-box>
   </div>
 </div>
@@ -19,4 +20,5 @@
     <!-- TableComponent -->
     <countries-country-table [countries]="countries" ></countries-country-table>
   </div>
+  <shared-loading-spinner *ngIf="isLoading" message="Buscando ..."  ></shared-loading-spinner>
 </div>

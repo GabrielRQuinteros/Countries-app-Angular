@@ -8,7 +8,7 @@
         $event = valor retornado del emiter -->
      <shared-search-box placeholder="Busqueda por País"
                         className="form-control"
-                        (onValue)="searchByCountry($event)"
+                        (onDebounce)="searchByCountry($event)"
                         ></shared-search-box>
   </div>
 </div>
