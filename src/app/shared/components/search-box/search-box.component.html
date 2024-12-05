@@ -1,7 +1,8 @@
+<!-- (keyup.enter)="search()" -->
 <input
       type="text"
       [placeholder]="placeholder"
       [className]="className"
-      (keyup.enter)="search()"
       #searchBoxInputId
+      (keyup)="onKeyPress( searchBoxInputId.value)"
 >

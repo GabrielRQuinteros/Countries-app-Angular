@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, of } from 'rxjs';
-import { Country } from '../interfaces/Country';
+import { catchError, delay, map, Observable, of } from 'rxjs';
+import { Country } from '../interfaces/country';
+import { CacheStore } from '../interfaces/cache-store.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,12 @@ export class CountriesService {
   private suplierBaseURL: string = "https://restcountries.com/v3.1";
 
   constructor( private http: HttpClient ) { }
+
+  public cacheStore: CacheStore = {
+      byCapital: { term: "", countries: []},
+      byCountries: { term: "", countries: []},
+      byRegion: { countries: []},
+  }
 
 
   private getCapitalURL( capital: string ) {
@@ -29,22 +36,26 @@ export class CountriesService {
     return `${this.suplierBaseURL}/alpha/${code}`;
   }
 
+  private getCountriesRequest( callback : ( arg: string ) => string, term: string  ): Observable<Country[]> {
+    return this.http.get<Country[] >( callback( term ) )
+                    .pipe( catchError(()=> of([])),
+                          //  delay(2000)
+                           );
+  }
+
 
   /// DEFINICION DE PETICIONES ( NO LAS EJECUTA TODAVIA --> SE EJECUTAN AGREGANDO .suscribe() al observable que retornan )
 
   public searchByCapital ( capital: string ): Observable<Country[]> {
-    return this.http.get<Country[]>( this.getCapitalURL( capital ) )
-                    .pipe( catchError(()=> of([])) );
+    return this.getCountriesRequest( this.getCapitalURL.bind(this), capital );
   }
 
   public searchByName ( name: string ): Observable<Country[]> {
-    return this.http.get<Country[]>( this.getNameURL( name ) )
-                    .pipe( catchError(()=> of([])) );
+    return this.getCountriesRequest( this.getNameURL.bind(this), name );
   }
 
   public searchByRegion (region: string): Observable<Country[]> {
-    return this.http.get<Country[]>( this.getRegionURL( region ) )
-                    .pipe( catchError(()=> of([])) );
+    return this.getCountriesRequest( this.getRegionURL.bind(this), region );
   }
 
   public searchByCode (code: string): Observable<Country|null> {

@@ -10,6 +10,7 @@ import { CountryPageComponent } from './pages/country-page/country-page.componen
 import { SharedModule } from '../shared/shared.module';
 import { provideHttpClient } from '@angular/common/http';
 import { CountryTableComponent } from './components/country-table/country-table.component';
+import { CacheStoreInterfaceTsComponent } from './interfaces/cache-store.interface.ts/cache-store.interface.ts.component';
 
 
 
@@ -19,7 +20,8 @@ import { CountryTableComponent } from './components/country-table/country-table.
     ByCountryPageComponent,
     ByRegionPageComponent,
     CountryPageComponent,
-    CountryTableComponent
+    CountryTableComponent,
+    CacheStoreInterfaceTsComponent
   ],
   imports: [
     CommonModule,
