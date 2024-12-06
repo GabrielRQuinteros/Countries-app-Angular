@@ -26,7 +26,7 @@
           <td><img [src]="country.flags.png" [alt]="country.name.common"></td>
           <td>{{ country.name.common }}</td>
           <td>{{ country.capital }}</td>
-          <td>{{ country.population | number }}</td>
+          <td>{{ country.population }}</td>
           <td>{{ country.region }}</td>
           <td><a [routerLink]="['/countries/by', country.cca3]" >Ver Mas</a></td>
         </tr>
