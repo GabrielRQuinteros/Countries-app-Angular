@@ -1,8 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, delay, map, Observable, of } from 'rxjs';
+import { catchError, delay, map, Observable, of, tap } from 'rxjs';
 import { Country } from '../interfaces/country';
 import { CacheStore } from '../interfaces/cache-store.interface';
+import { Region } from '../interfaces/region.type';
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +12,16 @@ export class CountriesService {
 
   private suplierBaseURL: string = "https://restcountries.com/v3.1";
 
-  constructor( private http: HttpClient ) { }
-
   public cacheStore: CacheStore = {
       byCapital: { term: "", countries: []},
       byCountries: { term: "", countries: []},
       byRegion: { countries: []},
   }
 
+
+  constructor( private http: HttpClient ) {
+    this.loadFromLocalStorage();
+   }
 
   private getCapitalURL( capital: string ) {
     return `${this.suplierBaseURL}/capital/${capital}`;
@@ -47,15 +50,28 @@ export class CountriesService {
   /// DEFINICION DE PETICIONES ( NO LAS EJECUTA TODAVIA --> SE EJECUTAN AGREGANDO .suscribe() al observable que retornan )
 
   public searchByCapital ( capital: string ): Observable<Country[]> {
-    return this.getCountriesRequest( this.getCapitalURL.bind(this), capital );
+    return this.getCountriesRequest( this.getCapitalURL.bind(this), capital )
+               .pipe(
+                tap( countries => this.cacheStore.byCapital = { countries: countries, term: capital }),
+                tap( ()=> this.saveToLocalStorage())
+
+          );
   }
 
   public searchByName ( name: string ): Observable<Country[]> {
-    return this.getCountriesRequest( this.getNameURL.bind(this), name );
+    return this.getCountriesRequest( this.getNameURL.bind(this), name )
+                .pipe(
+                        tap( countries => this.cacheStore.byCountries = { countries: countries, term: name }),
+                        tap( ()=> this.saveToLocalStorage())
+                );
   }
 
-  public searchByRegion (region: string): Observable<Country[]> {
-    return this.getCountriesRequest( this.getRegionURL.bind(this), region );
+  public searchByRegion (region: Region): Observable<Country[]> {
+    return this.getCountriesRequest( this.getRegionURL.bind(this), region )
+               .pipe(
+                  tap( countries => this.cacheStore.byRegion = { countries: countries, region: region }),
+                  tap( ()=> this.saveToLocalStorage())
+                );
   }
 
   public searchByCode (code: string): Observable<Country|null> {
@@ -64,6 +80,16 @@ export class CountriesService {
                             map( countries => countries.length > 0 ? countries [0] : null ),
                             catchError(()=> of(null))
                      );
+  }
+
+  private saveToLocalStorage() {
+    localStorage.setItem( "cacheStore", JSON.stringify(this.cacheStore) );
+  }
+
+  private loadFromLocalStorage() {
+    const cacheStoreString = localStorage.getItem("cacheStore");
+    if( cacheStoreString != null )
+      this.cacheStore = JSON.parse( cacheStoreString );
   }
 
 
@@ -96,8 +122,6 @@ export class CountriesService {
                                 Es meter un proceso que no afecta el valor del stream en medio del stream.
                   3-a-3) catchError(): Me permite configurar que hago en caso de que en el flujo del pipe se lanza un error.
       3-b) of(): Me devuelve un observable de lo que pongamos adentro del Of. Es como estructura similar a un suplier, donde adentro definimos lo que se devuelve.
-
-
   */
 
 

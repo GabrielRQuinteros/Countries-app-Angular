@@ -28,7 +28,8 @@ export class SearchBoxComponent implements OnInit, OnDestroy {
   @ViewChild("searchBoxInputId") /// <-- ID Input SearchBox
   public textInput!: ElementRef<HTMLInputElement>;
 
-
+  @Input()
+  public initialValue: string = ""
 
 
   ngOnInit(): void {
